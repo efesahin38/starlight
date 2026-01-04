@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StarLight - Haksız Yorumları Silin, Müşteri Kazanın</title>
+    <meta name="description" content="Sahte, iftira niteliğinde veya rakip tarafından yazılan yorumlar Google Maps puanınızı yok ediyor. Her haksız yorum sattığınız müşterileri kaçırıyor. Biz bu olumsuz yorumları kalıcı olarak siliyoruz, işletmenizin puan ve gelirini anında yükseltiyor.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: '#0f172a',
+                        ocean: '#0891b2',
+                        coral: '#f97316',
+                        mint: '#10b981',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html { scroll-behavior: smooth; }
+        
+        body { 
+            background: linear-gradient(160deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            font-family: 'Outfit', sans-serif;
+        }
+        
+        .hero-pattern {
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(8, 145, 178, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(249, 115, 22, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+        
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+            will-change: transform;
+        }
+        
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+        
+        .slide-up {
+            animation: slideUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card-3d {
+            transform-style: preserve-3d;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+        
+        .card-3d:hover {
+            transform: translateY(-15px) rotateX(5deg);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .glow-text {
+            text-shadow: 0 0 30px rgba(8, 145, 178, 0.6);
+        }
+        
+        .badge-shine {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .badge-shine::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .mobile-menu-overlay {
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .process-card {
+            position: relative;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
+        }
+        
+        .process-card:hover {
+            transform: scale(1.08) translateY(-10px);
+        }
+        
+        .process-card::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg, #0891b2, #f97316, #10b981);
+            border-radius: inherit;
+            opacity: 0;
+            transition: opacity 0.5s;
+            z-index: -1;
+        }
+        
+        .process-card:hover::before {
+            opacity: 0.3;
+            animation: borderRotate 3s linear infinite;
+        }
+        
+        @keyframes borderRotate {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-pattern { background-attachment: scroll; }
+        }
+        
+        img { max-width: 100%; height: auto; display: block; }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        .before-after-box {
+            padding: 1.5rem;
+            border-radius: 1rem;
+            position: relative;
+        }
+
+        .emoji-large {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+    </style>
+</head>
+
+<body class="text-white min-h-screen">
+
+    <!-- Navigation -->
+    <nav>
+        <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+            <div class="flex justify-between items-center h-16 sm:h-20 lg:h-24">
+                <div class="flex items-center space-x-1 sm:space-x-2 lg:space-x-4 flex-shrink-0">
+                    <div class="w-8 sm:w-10 lg:w-14 h-8 sm:h-10 lg:h-14 bg-gradient-to-br from-ocean to-mint rounded-xl sm:rounded-2xl flex items-center justify-center text-lg sm:text-2xl lg:text-3xl font-bold shadow-xl shadow-ocean/30">✓</div>
+                    <span class="text-sm sm:text-xl lg:text-3xl font-display font-black bg-gradient-to-r from-ocean to-mint bg-clip-text text-transparent hidden sm:block">StarLight</span>
+                </div>
+                
+                <div class="hidden lg:flex items-center space-x-4 xl:space-x-6">
+                    <a href="#anasayfa" class="text-xs xl:text-sm hover:text-ocean transition-all duration-300 whitespace-nowrap">Ana Sayfa</a>
+                    <a href="#nasil" class="text-xs xl:text-sm hover:text-ocean transition-all duration-300 whitespace-nowrap">Nasıl</a>
+                    <a href="#hizmetler" class="text-xs xl:text-sm hover:text-ocean transition-all duration-300 whitespace-nowrap">Hizmetler</a>
+                    <a href="#iletisim" class="px-3 sm:px-4 lg:px-6 py-2 lg:py-3 bg-gradient-to-r from-ocean to-mint rounded-lg sm:rounded-xl font-bold text-xs lg:text-sm hover:shadow-2xl hover:shadow-ocean/40 transition-all hover:scale-105 whitespace-nowrap">İletişim</a>
+                </div>
+                
+                <button onclick="toggleMenu()" class="lg:hidden text-2xl sm:text-3xl hover:text-ocean transition-colors p-2 flex-shrink-0">☰</button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="lg:hidden fixed inset-0 mobile-menu-overlay bg-navy/95 transform translate-x-full transition-transform duration-300 z-40 overflow-y-auto mt-16">
+            <div class="flex flex-col h-full p-4 sm:p-8">
+                <button onclick="toggleMenu()" class="self-end text-3xl sm:text-4xl mb-8 sm:mb-12 hover:text-ocean transition-colors p-2">✕</button>
+                <div class="flex flex-col space-y-6 sm:space-y-8 text-lg sm:text-2xl">
+                    <a href="#anasayfa" onclick="toggleMenu()" class="hover:text-ocean transition-colors">Ana Sayfa</a>
+                    <a href="#nasil" onclick="toggleMenu()" class="hover:text-ocean transition-colors">Nasıl Çalışır?</a>
+                    <a href="#hizmetler" onclick="toggleMenu()" class="hover:text-ocean transition-colors">Hizmetler</a>
+                    <a href="#iletisim" onclick="toggleMenu()" class="px-4 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-ocean to-mint rounded-xl sm:rounded-2xl font-bold text-center hover:shadow-xl transition-all">İletişim</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="anasayfa" class="relative pt-24 sm:pt-32 lg:pt-40 pb-16 sm:pb-20 lg:pb-24 px-4 sm:px-6 lg:px-8 hero-pattern overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+                <div class="slide-up">
+                    <div class="inline-flex items-center space-x-2 sm:space-x-3 px-4 sm:px-8 py-3 sm:py-4 glass rounded-full mb-6 sm:mb-10 badge-shine text-sm sm:text-base">
+                        <span class="w-3 h-3 sm:w-4 sm:h-4 bg-mint rounded-full animate-pulse flex-shrink-0"></span>
+                        <span class="font-semibold">Profesyonel • Hızlı • Güvenilir</span>
+                    </div>
+                    
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-display font-black leading-tight mb-6 sm:mb-8">
+                        Haksız Yorumları
+                        <br>
+                        <span class="glow-text bg-gradient-to-r from-coral via-mint to-ocean bg-clip-text text-transparent">Silin, Müşteri Kazanın!</span>
+                    </h1>
+                    
+                    <p class="text-lg sm:text-xl lg:text-2xl text-gray-300 leading-relaxed mb-8 sm:mb-12 max-w-2xl">
+                        Sahte, iftira niteliğinde veya rakip tarafından yazılan yorumlar Google Maps puanınızı yok ediyor. Her haksız yorum sattığınız müşterileri kaçırıyor. Biz bu olumsuz yorumları kalıcı olarak siliyoruz, işletmenizin puan ve gelirini anında yükseltiyor.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                        <a href="#iletisim" class="group px-8 sm:px-12 py-4 sm:py-6 bg-gradient-to-r from-ocean to-mint rounded-2xl font-bold text-base sm:text-lg hover:shadow-2xl hover:shadow-ocean/50 transition-all hover:scale-105 text-center">
+                            <span class="flex items-center justify-center space-x-2 sm:space-x-3">
+                                <span>Hemen Başla</span>
+                                <span class="text-lg sm:text-2xl group-hover:translate-x-2 transition-transform">→</span>
+                            </span>
+                        </a>
+                        <a href="#nasil" class="px-8 sm:px-12 py-4 sm:py-6 glass rounded-2xl font-bold text-base sm:text-lg hover:bg-white/10 transition-all text-center">Detaylı Bilgi</a>
+                    </div>
+                </div>
+                
+                <div class="relative floating hidden lg:block">
+                    <div class="rounded-3xl overflow-hidden shadow-2xl border-4 border-white/10">
+                        <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&h=1000&fit=crop" alt="Mutlu Müşteriler" class="w-full h-auto">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+                <div class="glass rounded-3xl p-6 sm:p-10 text-center card-3d">
+                    <div class="text-4xl sm:text-5xl lg:text-6xl font-black bg-gradient-to-r from-ocean to-mint bg-clip-text text-transparent mb-3 counter" data-target="15200">0</div>
+                    <div class="text-gray-400 text-sm sm:text-lg">Çözülen Durum</div>
+                </div>
+                <div class="glass rounded-3xl p-6 sm:p-10 text-center card-3d">
+                    <div class="text-4xl sm:text-5xl lg:text-6xl font-black bg-gradient-to-r from-mint to-coral bg-clip-text text-transparent mb-3"><span class="counter" data-target="96">0</span>%</div>
+                    <div class="text-gray-400 text-sm sm:text-lg">Başarı Oranı</div>
+                </div>
+                <div class="glass rounded-3xl p-6 sm:p-10 text-center card-3d">
+                    <div class="text-4xl sm:text-5xl lg:text-6xl font-black bg-gradient-to-r from-coral to-ocean bg-clip-text text-transparent mb-3 counter" data-target="2800">0</div>
+                    <div class="text-gray-400 text-sm sm:text-lg">Memnun Müşteri</div>
+                </div>
+                <div class="glass rounded-3xl p-6 sm:p-10 text-center card-3d">
+                    <div class="text-4xl sm:text-5xl lg:text-6xl font-black bg-gradient-to-r from-ocean to-coral bg-clip-text text-transparent mb-3 counter" data-target="36">0</div>
+                    <div class="text-gray-400 text-sm sm:text-lg">Saat Ortalama</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="relative py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 border-b border-white/10 hero-pattern overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            <div class="glass rounded-3xl p-8 sm:p-10 lg:p-16">
+                <div class="text-center mb-10 sm:mb-16">
+                    <div class="inline-flex items-center justify-center w-16 sm:w-20 lg:w-24 h-16 sm:h-20 lg:h-24 bg-gradient-to-br from-coral to-mint rounded-full mb-6 sm:mb-10 shadow-2xl shadow-coral/40 animate-pulse flex-shrink-0">
+                        <span class="text-3xl sm:text-4xl lg:text-5xl">⚡</span>
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-display font-black mb-4 sm:mb-8">
+                    Paket İçerisinde <span class="bg-gradient-to-r from-ocean to-coral bg-clip-text text-transparent">Tam Hizmet</span>
+                </h2>
+                <p class="text-lg sm:text-xl lg:text-2xl text-gray-300 max-w-3xl mx-auto">Yorum silmekten müşteri kazanmaya kadar hepsi paket içinde</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
+                <div class="glass rounded-3xl p-6 sm:p-8 lg:p-10 card-3d group">
+                    <div class="w-16 sm:w-20 h-16 sm:h-20 bg-gradient-to-br from-ocean to-mint rounded-3xl flex items-center justify-center text-3xl sm:text-4xl mb-6 sm:mb-8 shadow-xl group-hover:scale-110 transition-transform flex-shrink-0">🔍</div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Detaylı Analiz</h3>
+                    <p class="text-gray-300 text-base sm:text-lg leading-relaxed">Google Maps yorumlarının profesyonel analizi. Hangi yorumların silinebileceği ayrıntılı rapor halinde.</p>
+                </div>
+                
+                <div class="glass rounded-3xl p-6 sm:p-8 lg:p-10 card-3d group">
+                    <div class="w-16 sm:w-20 h-16 sm:h-20 bg-gradient-to-br from-mint to-coral rounded-3xl flex items-center justify-center text-3xl sm:text-4xl mb-6 sm:mb-8 shadow-xl group-hover:scale-110 transition-transform flex-shrink-0">📋</div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Resmi Yazı</h3>
+                    <p class="text-gray-300 text-base sm:text-lg leading-relaxed">Google'a resmi yazı göndererek platform politikasını uyarırız.</p>
+                </div>
+                
+                <div class="glass rounded-3xl p-6 sm:p-8 lg:p-10 card-3d group">
+                    <div class="w-16 sm:w-20 h-16 sm:h-20 bg-gradient-to-br from-coral to-ocean rounded-3xl flex items-center justify-center text-3xl sm:text-4xl mb-6 sm:mb-8 shadow-xl group-hover:scale-110 transition-transform flex-shrink-0">💬</div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Tam İletişim</h3>
+                    <p class="text-gray-300 text-base sm:text-lg leading-relaxed">Tüm Google iletişimini biz yönetiriz. Yazışma ve takip - hepsi sizin yerinize.</p>
+                </div>
+                
+                <div class="glass rounded-3xl p-6 sm:p-8 lg:p-10 card-3d group">
+                    <div class="w-16 sm:w-20 h-16 sm:h-20 bg-gradient-to-br from-mint to-ocean rounded-3xl flex items-center justify-center text-3xl sm:text-4xl mb-6 sm:mb-8 shadow-xl group-hover:scale-110 transition-transform flex-shrink-0">✅</div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Silinme Doğrulaması</h3>
+                    <p class="text-gray-300 text-base sm:text-lg leading-relaxed">Yorumlar silindiğinde gerçek silinmeyi doğrularız. Kalıcı kontrol.</p>
+                </div>
+                
+                <div class="glass rounded-3xl p-6 sm:p-8 lg:p-10 card-3d group">
+                    <div class="w-16 sm:w-20 h-16 sm:h-20 bg-gradient-to-br from-ocean to-coral rounded-3xl flex items-center justify-center text-3xl sm:text-4xl mb-6 sm:mb-8 shadow-xl group-hover:scale-110 transition-transform flex-shrink-0">📊</div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">İlerleme Raporları</h3>
+                    <p class="text-gray-300 text-base sm:text-lg leading-relaxed">Her adımda güncellenmiş rapor. Puanınız nasıl yükseliyor göreceğiniz detaylı izleme.</p>
+                </div>
+                
+                <div class="glass rounded-3xl p-6 sm:p-8 lg:p-10 card-3d group">
+                    <div class="w-16 sm:w-20 h-16 sm:h-20 bg-gradient-to-br from-coral to-mint rounded-3xl flex items-center justify-center text-3xl sm:text-4xl mb-6 sm:mb-8 shadow-xl group-hover:scale-110 transition-transform flex-shrink-0">🛡️</div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Gizlilik Garantisi</h3>
+                    <p class="text-gray-300 text-base sm:text-lg leading-relaxed">SSL şifreli bağlantı, gizli veri depolama. Verileriniz hiçbir zaman paylaşılmaz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-12 sm:py-16 lg:py-24 px-4 sm:px-6 lg:px-8 hero-pattern">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12 sm:mb-16 lg:mb-20">
+                <h2 class="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-display font-black mb-6 sm:mb-8 leading-tight">
+                        Haksız Yorumlar Silinince
+                        <br>
+                        <span class="bg-gradient-to-r from-coral via-ocean to-mint bg-clip-text text-transparent">Müşteriler Hemen Geliyor!</span>
+                    </h2>
+                    <p class="text-lg sm:text-xl lg:text-2xl xl:text-3xl text-gray-200 max-w-5xl mx-auto leading-relaxed">
+                        Sadece "yorum silmek" değil, <strong>işletmenizin Google puanını yeniden tırmandıran</strong> bir profesyonel çözüm. Gerçek sonuçlar: Daha yüksek puan, daha fazla müşteri arama, daha çok ciro.
+                    </p>
+                </div>
+
+                <!-- Comparison with Images -->
+                <div class="mb-12 sm:mb-16 lg:mb-20">
+                    <div class="comparison-grid">
+                        <!-- BEFORE -->
+                        <div class="before-after-box bg-red-500/10 border-2 border-red-500/30 rounded-2xl overflow-hidden">
+                            <div class="emoji-large">❌</div>
+                            <h3 class="text-2xl sm:text-3xl font-bold mb-2 text-red-400">ÖNCE: 4.2 ⭐</h3>
+                            <p class="text-sm sm:text-base text-gray-300 mb-6">(Olumsuz yorum bombardımanı)</p>
+                            <img src="https://www.netreputation.com/wp-content/uploads/pizzaplacereviews_22525.png" alt="Düşük puanlı profil" class="w-full rounded-lg mb-6 border border-red-500/20">
+                            <ul class="space-y-2 text-sm sm:text-base text-gray-300">
+                                <li>🔴 Haksız 1-2 yıldız yorumlar</li>
+                                <li>🔴 Düşük Google sıralaması</li>
+                                <li>🔴 Müşteriler geçip gidiyor</li>
+                                <li>🔴 Haftada %40 daha az arama</li>
+                                <li>🔴 "Acaba burası kötü mü?" şüphesi</li>
+                            </ul>
+                        </div>
+
+                        <!-- AFTER -->
+                        <div class="before-after-box bg-mint/10 border-2 border-mint/30 rounded-2xl overflow-hidden">
+                            <div class="emoji-large">✅</div>
+                            <h3 class="text-2xl sm:text-3xl font-bold mb-2 text-mint">SONRA: 4.8 ⭐</h3>
+                            <p class="text-sm sm:text-base text-gray-300 mb-6">(Temiz ve güvenilir profil)</p>
+                            <img src="https://wiserreview.com/wp-content/uploads/2025/08/20250826_1606_5-StarReviewCelebration_simple_compose_01k3jz57m1fenvtae1qvf60ca.jpeg" alt="Yüksek puanlı profil" class="w-full rounded-lg mb-6 border border-mint/20">
+                            <ul class="space-y-2 text-sm sm:text-base text-gray-300">
+                                <li>🟢 Sadece gerçek müşteri yorumları</li>
+                                <li>🟢 Üst sıralarda Google'da çıkış</li>
+                                <li>🟢 Müşteriler hemen arama/rezervasyon</li>
+                                <li>🟢 Haftada +%50 daha fazla arama</li>
+                                <li>🟢 "Burası çok iyiymiş!" güveni</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Benefits After Cleanup -->
+                <div class="mb-12 sm:mb-16 lg:mb-20">
+                    <div class="text-center mb-8 sm:mb-12">
+                        <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">🎯 Haksız Yorumlar Silinince Ne Olur?</h3>
+                        <p class="text-gray-300 text-base sm:text-lg">Puanınız yükselmekle kalmıyor - işletme tamamen dönüşüyor!</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                        <div class="glass rounded-2xl p-4 sm:p-6 text-center">
+                            <div class="text-5xl mb-3">📈</div>
+                            <h4 class="font-bold text-mint mb-2">Puan Yükselir</h4>
+                            <p class="text-gray-300 text-sm sm:text-base">4.2 → 4.8 gibi dramatik artış. Her müşteri bunu görüyor.</p>
+                        </div>
+
+                        <div class="glass rounded-2xl p-4 sm:p-6 text-center">
+                            <div class="text-5xl mb-3">👥</div>
+                            <h4 class="font-bold text-ocean mb-2">Müşteri Artar</h4>
+                            <p class="text-gray-300 text-sm sm:text-base">Google arama listesinde daha üst sıralara çıkıyor. +%50 tıklama.</p>
+                        </div>
+
+                        <div class="glass rounded-2xl p-4 sm:p-6 text-center">
+                            <div class="text-5xl mb-3">💰</div>
+                            <h4 class="font-bold text-coral mb-2">Gelir Artar</h4>
+                            <p class="text-gray-300 text-sm sm:text-base">Daha fazla müşteri = daha fazla satış. Ayda binlerce € ekstra.</p>
+                        </div>
+
+                        <div class="glass rounded-2xl p-4 sm:p-6 text-center">
+                            <div class="text-5xl mb-3">🔍</div>
+                            <h4 class="font-bold text-mint mb-2">Görünürlük Artar</h4>
+                            <p class="text-gray-300 text-sm sm:text-base">Yüksek puanlı işletmeler Google'da 5-10 kez daha fazla görülür.</p>
+                        </div>
+
+                        <div class="glass rounded-2xl p-4 sm:p-6 text-center">
+                            <div class="text-5xl mb-3">⭐</div>
+                            <h4 class="font-bold text-coral mb-2">İtibar Kurtarılır</h4>
+                            <p class="text-gray-300 text-sm sm:text-base">İşletmeniz artık profesyonel, güvenilir, kaliteli olarak görülür.</p>
+                        </div>
+
+                        <div class="glass rounded-2xl p-4 sm:p-6 text-center">
+                            <div class="text-5xl mb-3">🚀</div>
+                            <h4 class="font-bold text-ocean mb-2">Hızlı Büyüme</h4>
+                            <p class="text-gray-300 text-sm sm:text-base">3-6 ay içinde işletmeniz kayda değer şekilde büyür.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real Results -->
+                <div class="mb-12 sm:mb-16 lg:mb-20">
+                    <div class="text-center mb-8 sm:mb-12">
+                        <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">💡 Gerçek Sonuçlar</h3>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-12">
+                        <div class="glass rounded-3xl p-6 sm:p-8 lg:p-12 text-center card-3d">
+                            <div class="text-5xl sm:text-6xl lg:text-7xl mb-4 sm:mb-6">📈</div>
+                            <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-mint">+0.4 - 0.8 Puan</h3>
+                            <p class="text-base sm:text-lg lg:text-xl text-gray-300 leading-relaxed">
+                                Haksız yorumları kaldırdığımızda ortalama puanınız bu kadar yükseliyor. 4.2 → 4.8 ise oldukça gerçekçi!
+                            </p>
+                        </div>
+
+                        <div class="glass rounded-3xl p-6 sm:p-8 lg:p-12 text-center card-3d">
+                            <div class="text-5xl sm:text-6xl lg:text-7xl mb-4 sm:mb-6">👥</div>
+                            <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-ocean">+%30-70 Müşteri</h3>
+                            <p class="text-base sm:text-lg lg:text-xl text-gray-300 leading-relaxed">
+                                4.5+ puanlı işletmeler, 4.0 altı olanlara kıyasla çok daha fazla tıklama ve ziyaret alıyor.
+                            </p>
+                        </div>
+
+                        <div class="glass rounded-3xl p-6 sm:p-8 lg:p-12 text-center card-3d">
+                            <div class="text-5xl sm:text-6xl lg:text-7xl mb-4 sm:mb-6">💰</div>
+                            <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-coral">Binlerce € Gelir</h3>
+                            <p class="text-base sm:text-lg lg:text-xl text-gray-300 leading-relaxed">
+                                Her 0.1 puan artışı = ortalama %5-12 ciro artışı. 10 olumsuz yorum temizlemek = ciddi yatırım getirisi!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row justify-center gap-4 sm:gap-6 lg:gap-10">
+                    <a href="#iletisim" class="px-6 sm:px-12 lg:px-16 py-6 sm:py-8 lg:py-9 bg-gradient-to-r from-coral via-mint to-ocean rounded-3xl font-bold text-base sm:text-lg lg:text-2xl hover:shadow-2xl hover:shadow-mint/60 transition-all hover:scale-105 shadow-2xl flex items-center justify-center gap-2 sm:gap-4 text-center">
+                        <span>Başarı Analizi Yap → Müşteri Kazanın!</span>
+                        <span class="text-2xl sm:text-3xl lg:text-4xl">🔥</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Process -->
+    <section id="nasil" class="py-12 sm:py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12 sm:mb-16 lg:mb-20">
+                <h2 class="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-display font-black mb-4 sm:mb-8">
+                    <span class="bg-gradient-to-r from-ocean to-mint bg-clip-text text-transparent">4 Adımda</span> Sorunu Çöz
+                </h2>
+                <p class="text-lg sm:text-xl lg:text-2xl text-gray-300">Basit, şeffaf ve etkili çözüm süreci</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+                <div class="process-card glass rounded-3xl p-6 sm:p-8 lg:p-10 text-center">
+                    <div class="w-24 sm:w-28 lg:w-36 h-24 sm:h-28 lg:h-36 mx-auto bg-gradient-to-br from-ocean to-mint rounded-full flex items-center justify-center text-4xl sm:text-5xl lg:text-6xl font-black mb-6 sm:mb-8 shadow-2xl shadow-ocean/40 flex-shrink-0">1</div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">İşletme Bilgisi</h3>
+                    <p class="text-gray-300 text-base sm:text-lg leading-relaxed">İşletme adınızı girin - sistemimiz Google Maps profilinizi otomatik bulur ve tüm yorumları tarar.</p>
+                </div>
+                
+                <div class="process-card glass rounded-3xl p-6 sm:p-8 lg:p-10 text-center">
+                    <div class="w-24 sm:w-28 lg:w-36 h-24 sm:h-28 lg:h-36 mx-auto bg-gradient-to-br from-mint to-coral rounded-full flex items-center justify-center text-4xl sm:text-5xl lg:text-6xl font-black mb-6 sm:mb-8 shadow-2xl shadow-mint/40 flex-shrink-0">2</div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Detaylı İnceleme</h3>
+                    <p class="text-gray-300 text-base sm:text-lg leading-relaxed">Ekibimiz her yorumu profesyonelce inceler, Google politikalarına aykırı içerikleri tespit eder.</p>
+                </div>
+                
+                <div class="process-card glass rounded-3xl p-6 sm:p-8 lg:p-10 text-center">
+                    <div class="w-24 sm:w-28 lg:w-36 h-24 sm:h-28 lg:h-36 mx-auto bg-gradient-to-br from-coral to-ocean rounded-full flex items-center justify-center text-4xl sm:text-5xl lg:text-6xl font-black mb-6 sm:mb-8 shadow-2xl shadow-coral/40 flex-shrink-0">3</div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Detaylı Rapor</h3>
+                    <p class="text-gray-300 text-base sm:text-lg leading-relaxed">Hemen anında detaylı analiz raporu alın. Hangi yorumların silinebileceğini ve tahmini süreyi öğrenin.</p>
+                </div>
+                
+                <div class="process-card glass rounded-3xl p-6 sm:p-8 lg:p-10 text-center">
+                    <div class="w-24 sm:w-28 lg:w-36 h-24 sm:h-28 lg:h-36 mx-auto bg-gradient-to-br from-ocean via-mint to-coral rounded-full flex items-center justify-center text-4xl sm:text-5xl lg:text-6xl font-black mb-6 sm:mb-8 shadow-2xl shadow-ocean/40 flex-shrink-0">4</div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Sorun Çözümü</h3>
+                    <p class="text-gray-300 text-base sm:text-lg leading-relaxed">Onay verirseniz, uzman ekibimiz harekete geçer ve yorumları sistematik kaldırır.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+       <!-- Services -->
+    <section id="hizmetler" class="py-12 sm:py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12 sm:mb-16 lg:mb-20">
+                                <h2 class="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-display font-black mb-4 sm:mb-8">
+                    Paket İçerisinde <span class="bg-gradient-to-r from-ocean to-coral bg-clip-text text-transparent">Neler Var?</span>
+                </h2>
+                <p class="text-lg sm:text-xl lg:text-2xl text-gray-300 max-w-3xl mx-auto">Sabit fiyata - tamamen şeffaf, gizli maliyet yok</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
+                <div class="glass rounded-3xl p-6 sm:p-8 lg:p-10 card-3d group">
+                    <div class="w-16 sm:w-20 h-16 sm:h-20 bg-gradient-to-br from-ocean to-mint rounded-3xl flex items-center justify-center text-3xl sm:text-4xl mb-6 sm:mb-8 shadow-xl group-hover:scale-110 transition-transform flex-shrink-0">🔍</div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Tam Analiz</h3>
+                    <p class="text-gray-300 text-base sm:text-lg leading-relaxed">Google Maps yorumlarının profesyonel  analizi. Hangi yorumların silinebileceği ayrıntılı rapor halinde.</p>
+                </div>
+                
+              
+                
+                <div class="glass rounded-3xl p-6 sm:p-8 lg:p-10 card-3d group">
+                    <div class="w-16 sm:w-20 h-16 sm:h-20 bg-gradient-to-br from-coral to-ocean rounded-3xl flex items-center justify-center text-3xl sm:text-4xl mb-6 sm:mb-8 shadow-xl group-hover:scale-110 transition-transform flex-shrink-0">💬</div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Tam İletişim</h3>
+                    <p class="text-gray-300 text-base sm:text-lg leading-relaxed">Tüm Google iletişimini biz yönetiriz. Yazışma, takip, durum güncellemeleri - hepsi sizin yerinize.</p>
+                </div>
+                
+                <div class="glass rounded-3xl p-6 sm:p-8 lg:p-10 card-3d group">
+                    <div class="w-16 sm:w-20 h-16 sm:h-20 bg-gradient-to-br from-mint to-ocean rounded-3xl flex items-center justify-center text-3xl sm:text-4xl mb-6 sm:mb-8 shadow-xl group-hover:scale-110 transition-transform flex-shrink-0">✅</div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Silinme Doğrulaması</h3>
+                    <p class="text-gray-300 text-base sm:text-lg leading-relaxed">Yorumlar Google tarafından silindiğinde gerçek silinmeyi doğrularız. Kalıcı kontrol.</p>
+                </div>
+                
+                <div class="glass rounded-3xl p-6 sm:p-8 lg:p-10 card-3d group">
+                    <div class="w-16 sm:w-20 h-16 sm:h-20 bg-gradient-to-br from-ocean to-coral rounded-3xl flex items-center justify-center text-3xl sm:text-4xl mb-6 sm:mb-8 shadow-xl group-hover:scale-110 transition-transform flex-shrink-0">📊</div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">İlerleme Raporları</h3>
+                    <p class="text-gray-300 text-base sm:text-lg leading-relaxed">Her adımda güncellenmiş rapor. Puanınız nasıl yükseliyorsa bunu göreceğiniz detaylı izleme.</p>
+                </div>
+                
+                <div class="glass rounded-3xl p-6 sm:p-8 lg:p-10 card-3d group">
+                    <div class="w-16 sm:w-20 h-16 sm:h-20 bg-gradient-to-br from-coral to-mint rounded-3xl flex items-center justify-center text-3xl sm:text-4xl mb-6 sm:mb-8 shadow-xl group-hover:scale-110 transition-transform flex-shrink-0">🛡️</div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">Gizlilik Garantisi</h3>
+                    <p class="text-gray-300 text-base sm:text-lg leading-relaxed">GDPR uyumlu, şifreli iletişim, tamamen gizli. Verileriniz hiçbir zaman paylaşılmaz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-12 sm:py-16 lg:py-24 px-4 sm:px-6 lg:px-8 hero-pattern">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-12 sm:mb-16 lg:mb-20">
+                <h2 class="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-display font-black mb-4 sm:mb-8">
+                    <span class="bg-gradient-to-r from-coral to-mint bg-clip-text text-transparent">İşletme Sahipleri</span> Ne Diyiyor?
+                </h2>
+                <p class="text-lg sm:text-xl lg:text-2xl text-gray-300">15.200+ işletmeyi kurtardığımız gerçek müşterilerden</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                <!-- Testimonial 1 -->
+                <div class="glass rounded-3xl p-6 sm:p-8 lg:p-10 card-3d border-l-4 border-mint">
+                    <div class="flex items-center space-x-1 mb-4 sm:mb-6">
+                        <span class="text-xl">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <p class="text-base sm:text-lg text-gray-300 mb-6 leading-relaxed italic">
+                        "6 aylık çabayla yapamadığımız şeyi 2 haftada çözdüler. Puanım 3.8'den 4.7'ye çıktı. İşletmeme gelen müşteri sayısı %80 arttı!"
+                    </p>
+                    <div class="border-t border-white/10 pt-4 sm:pt-6">
+                        <p class="font-bold text-mint">Fatih B.</p>
+                        <p class="text-sm text-gray-400">Restoran Sahibi, Köln</p>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="glass rounded-3xl p-6 sm:p-8 lg:p-10 card-3d border-l-4 border-coral">
+                    <div class="flex items-center space-x-1 mb-4 sm:mb-6">
+                        <span class="text-xl">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <p class="text-base sm:text-lg text-gray-300 mb-6 leading-relaxed italic">
+                        "Haksız yorum nedeniyle iş yerimin itibarı zedelenmişti. Hemen müdahale ettiler, sorun çözüldü. Çok profesyoneldi."
+                    </p>
+                    <div class="border-t border-white/10 pt-4 sm:pt-6">
+                        <p class="font-bold text-ocean">Ayşe K.</p>
+                        <p class="text-sm text-gray-400">Kuaför Salonu Sahibi, Berlin</p>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="glass rounded-3xl p-6 sm:p-8 lg:p-10 card-3d border-l-4 border-ocean">
+                    <div class="flex items-center space-x-1 mb-4 sm:mb-6">
+                        <span class="text-xl">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <p class="text-base sm:text-lg text-gray-300 mb-6 leading-relaxed italic">
+                        "Fiyat makul, hizmet mükemmel. 2 haftada 5 olumsuz yorum silindi. Şu an puanım 4.9'da! Tavsiye ederim."
+                    </p>
+                    <div class="border-t border-white/10 pt-4 sm:pt-6">
+                        <p class="font-bold text-mint">Mehmet Y.</p>
+                        <p class="text-sm text-gray-400">Otel Müdürü, Hamburg</p>
+                    </div>
+                </div>
+
+                <!-- Testimonial 4 -->
+                <div class="glass rounded-3xl p-6 sm:p-8 lg:p-10 card-3d border-l-4 border-coral">
+                    <div class="flex items-center space-x-1 mb-4 sm:mb-6">
+                        <span class="text-xl">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <p class="text-base sm:text-lg text-gray-300 mb-6 leading-relaxed italic">
+                        "Yanlış kişinin 1 yıldız yorumundan kurtuldum. Cevaplarım çok hızlı ve sonuç garantiliydi. Çok memnunum!"
+                    </p>
+                    <div class="border-t border-white/10 pt-4 sm:pt-6">
+                        <p class="font-bold text-ocean">Zeynep A.</p>
+                        <p class="text-sm text-gray-400">Odyolog, Münih</p>
+                    </div>
+                </div>
+
+                <!-- Testimonial 5 -->
+                <div class="glass rounded-3xl p-6 sm:p-8 lg:p-10 card-3d border-l-4 border-mint">
+                    <div class="flex items-center space-x-1 mb-4 sm:mb-6">
+                        <span class="text-xl">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <p class="text-base sm:text-lg text-gray-300 mb-6 leading-relaxed italic">
+                        "Benim için 3 haksız yorum vardı. Tümünü kaldırdılar. Google puanım yükseldi, arama trafiğim çoğaldı. Teşekkürler!"
+                    </p>
+                    <div class="border-t border-white/10 pt-4 sm:pt-6">
+                        <p class="font-bold text-coral">David S.</p>
+                        <p class="text-sm text-gray-400">Oto Tamircisi, Frankfurt</p>
+                    </div>
+                </div>
+
+                <!-- Testimonial 6 -->
+                <div class="glass rounded-3xl p-6 sm:p-8 lg:p-10 card-3d border-l-4 border-ocean">
+                    <div class="flex items-center space-x-1 mb-4 sm:mb-6">
+                        <span class="text-xl">⭐⭐⭐⭐⭐</span>
+                    </div>
+                    <p class="text-base sm:text-lg text-gray-300 mb-6 leading-relaxed italic">
+                        "Rakibim gibi görünen sahte yorumlar vardı. Bunları kaldırdıktan sonra işletmem yeniden ayağa kalktı. Mükemmel!"
+                    </p>
+                    <div class="border-t border-white/10 pt-4 sm:pt-6">
+                        <p class="font-bold text-mint">Sandra W.</p>
+                        <p class="text-sm text-gray-400">Spa Sahibi, Düsseldorf</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="iletisim" class="py-12 sm:py-16 lg:py-24 px-4 sm:px-6 lg:px-8 glass">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-12 sm:mb-16">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-display font-black mb-4 sm:mb-6">
+                    Hemen <span class="bg-gradient-to-r from-ocean to-coral bg-clip-text text-transparent">İletişime Geçin</span>
+                </h2>
+                <p class="text-base sm:text-lg lg:text-xl xl:text-2xl text-gray-300">Profesyonel danışmanlarımız 24 saat içinde yanıt verecektir</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 sm:gap-8 lg:gap-10">
+                <!-- WhatsApp -->
+                <a href="https://wa.me/4917627729811?text=Merhaba! Google Maps yorumlarımda olumsuz yorum sounu var. Detaylı analiz ve çözüm almak istiyorum."
+                   class="glass rounded-3xl p-8 sm:p-10 lg:p-12 card-3d group text-center hover:border-mint/50 border-2 border-transparent transition-all">
+                    <div class="text-6xl sm:text-7xl mb-6 sm:mb-8 group-hover:scale-110 transition-transform">💬</div>
+                    <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-mint">WhatsApp</h3>
+                    <p class="text-gray-300 text-base sm:text-lg mb-4 sm:mb-6 leading-relaxed">
+                        Canlı destek, hızlı yanıt. WhatsApp üzerinden bize ulaşın.
+                    </p>
+                    <div class="flex items-center justify-center space-x-2 text-mint font-semibold group-hover:translate-x-2 transition-transform">
+                        <span>Mesaj Gönder</span>
+                        <span>→</span>
+                    </div>
+                </a>
+
+                <!-- Email -->
+                <a href="mailto:efeshn.business@gmail.com?subject=Google Maps Yorum Analizi Talebi"
+                   class="glass rounded-3xl p-8 sm:p-10 lg:p-12 card-3d group text-center hover:border-ocean/50 border-2 border-transparent transition-all">
+                    <div class="text-6xl sm:text-7xl mb-6 sm:mb-8 group-hover:scale-110 transition-transform">📧</div>
+                    <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-ocean">E-Posta</h3>
+                    <p class="text-gray-300 text-base sm:text-lg mb-4 sm:mb-6 leading-relaxed">
+                        Detaylı sorularınız için e-posta gönderin. 24 saat içinde yanıt.
+                    </p>
+                    <div class="flex items-center justify-center space-x-2 text-ocean font-semibold group-hover:translate-x-2 transition-transform">
+                        <span>E-posta Yaz</span>
+                        <span>→</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="mt-12 sm:mt-16 lg:mt-20 glass rounded-3xl p-6 sm:p-8 lg:p-10">
+                <h3 class="text-xl sm:text-2xl lg:text-3xl font-bold mb-6 sm:mb-8 text-center">Hakkımızda</h3>
+                <div class="grid md:grid-cols-3 gap-6 sm:gap-8">
+                   
+                    <div class="text-center">
+                        <div class="text-4xl sm:text-5xl mb-3 sm:mb-4">🎯</div>
+                        <h4 class="font-bold mb-2 sm:mb-3 text-lg sm:text-xl">%96 Başarı</h4>
+                        <p class="text-gray-400 text-sm sm:text-base leading-relaxed">15.200+ sorun çözüldü</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl sm:text-5xl mb-3 sm:mb-4">🔒</div>
+                        <h4 class="font-bold mb-2 sm:mb-3 text-lg sm:text-xl">GDPR Uyumlu</h4>
+                        <p class="text-gray-400 text-sm sm:text-base leading-relaxed">Verileriniz tamamen güvenli</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+  
+
+
+    <footer class="py-12 sm:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 glass border-t border-white/10">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12 mb-12 sm:mb-16">
+                <div>
+                    <div class="flex items-center space-x-2 sm:space-x-4 mb-4 sm:mb-6">
+                        <div class="w-10 sm:w-12 h-10 sm:h-12 bg-gradient-to-br from-ocean to-mint rounded-2xl flex items-center justify-center text-xl sm:text-2xl font-bold flex-shrink-0">✓</div>
+                        <span class="text-xl sm:text-2xl font-display font-black">StarLight</span>
+                    </div>
+                    <p class="text-gray-400 leading-relaxed text-xs sm:text-sm lg:text-base">Google Maps'teki haksız olumsuz yorumları profesyonel yollarla kaldırır, işletmenizin puanını ve gelirini artırır.</p>
+                </div>
+                
+                <div>
+                    <h4 class="text-base sm:text-lg lg:text-xl font-bold mb-4 sm:mb-6">Hızlı Bağlantılar</h4>
+                    <div class="space-y-2 sm:space-y-3 text-xs sm:text-sm lg:text-base">
+                        <a href="#anasayfa" class="block text-gray-400 hover:text-ocean transition-colors">Ana Sayfa</a>
+                        <a href="#nasil" class="block text-gray-400 hover:text-ocean transition-colors">Nasıl Çalışır?</a>
+                        <a href="#hizmetler" class="block text-gray-400 hover:text-ocean transition-colors">Hizmetler</a>
+                        <a href="#iletisim" class="block text-gray-400 hover:text-ocean transition-colors">İletişim</a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-base sm:text-lg lg:text-xl font-bold mb-4 sm:mb-6">Sosyal Medya</h4>
+                    <div class="space-y-2 sm:space-y-3">
+                        <a href="https://wa.me/4917627729811" class="flex items-center space-x-2 text-gray-400 hover:text-mint transition-colors text-xs sm:text-sm lg:text-base">
+                            <span>💬</span>
+                            <span>WhatsApp</span>
+                        </a>
+                        <a href="mailto:efeshn.business@gmail.com" class="flex items-center space-x-2 text-gray-400 hover:text-ocean transition-colors text-xs sm:text-sm lg:text-base">
+                            <span>📧</span>
+                            <span>E-posta</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-base sm:text-lg lg:text-xl font-bold mb-4 sm:mb-6">Çalışma Saatleri</h4>
+                    <div class="space-y-2 sm:space-y-3 text-gray-400 text-xs sm:text-sm lg:text-base">
+                        <p>Pazartesi - Cuma</p>
+                        <p class="font-semibold">09:00 - 18:00 CET</p>
+                        <p class="mt-4">Cumartesi: 10:00 - 14:00</p>
+                        <p class="text-mint font-semibold">E-posta: 7/24 Aktif</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="pt-6 sm:pt-8 lg:pt-10 border-t border-white/10 text-center">
+                <p class="text-gray-400 text-xs sm:text-sm lg:text-base mb-2">© 2025 StarLight. Tüm hakları saklıdır.</p>
+                <p class="text-gray-500 text-xs">Profesyonel Danışmanlık | SSL Güvenli | Gizli Veri</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('translate-x-full');
+        }
+
+        const counters = document.querySelectorAll('.counter');
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = parseInt(entry.target.getAttribute('data-target'));
+                    animateNumber(entry.target, target);
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        counters.forEach(counter => counterObserver.observe(counter));
+
+        function animateNumber(element, target) {
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target.toLocaleString('tr-TR');
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.ceil(current).toLocaleString('tr-TR');
+                }
+            }, 30);
+        }
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href.startsWith('#')) {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        // Mobile menüyü kapat
+                        const menu = document.getElementById('mobileMenu');
+                        if (menu && !menu.classList.contains('translate-x-full')) {
+                            menu.classList.add('translate-x-full');
+                        }
+                    }
+                }
+            });
+        });
+
+        // Smooth scroll for details elements
+        document.querySelectorAll('details').forEach(detail => {
+            detail.addEventListener('toggle', function() {
+                if (this.open) {
+                    setTimeout(() => {
+                        this.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 100);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
