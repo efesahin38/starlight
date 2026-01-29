@@ -1149,31 +1149,57 @@
     </script>
     <script>window.gtranslateSettings = { "default_language": "tr", "languages": ["tr", "en", "de"], "wrapper_selector": ".gtranslate_wrapper", "switcher_horizontal_position": "left", "vertical_position": "bottom", "flag_style": "3d", "detect_browser_language": false }</script>
     <script src="https://cdn.gtranslate.net/widgets/latest/float.js" defer></script>
-    <script>
+  <script>
   function updateComparisonImages() {
-    const lang = getLanguage(); // senin mevcut fonksiyonun
-    const isTr = (lang === 'tr');
+    const lang = getLanguage();
+    const isTr = lang === 'tr';
 
     const before = document.getElementById('imgBefore');
     const after  = document.getElementById('imgAfter');
 
-    if (before) before.src = isTr ? before.dataset.tr : before.dataset.default;
-    if (after)  after.src  = isTr ? after.dataset.tr  : after.dataset.default;
+    if (before) {
+      before.src = isTr ? before.dataset.tr : before.dataset.default;
+    }
+
+    if (after) {
+      after.src = isTr ? after.dataset.tr : after.dataset.default;
+    }
   }
 
-  // Sayfa açılınca
-  window.addEventListener('DOMContentLoaded', updateComparisonImages);
+  function watchGTranslate() {
+    const select = document.querySelector('.gtranslate_wrapper select');
+    if (!select) return false;
 
-  // GTranslate bazen cookie/lang'ı sonradan değiştiriyor → izleyelim
-  let lastLang = null;
-  setInterval(() => {
-    const current = getLanguage();
-    if (current !== lastLang) {
-      lastLang = current;
-      updateComparisonImages();
-    }
-  }, 500);
+    select.addEventListener('change', () => {
+      // GTranslate gecikmeli çalıştığı için birkaç kez deniyoruz
+      setTimeout(updateComparisonImages, 50);
+      setTimeout(updateComparisonImages, 300);
+      setTimeout(updateComparisonImages, 800);
+    });
+
+    return true;
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    updateComparisonImages();
+
+    // GTranslate geç yükleniyor olabilir
+    const interval = setInterval(() => {
+      if (watchGTranslate()) clearInterval(interval);
+    }, 300);
+
+    // Ekstra garanti: dili sürekli kontrol et
+    let lastLang = null;
+    setInterval(() => {
+      const current = getLanguage();
+      if (current !== lastLang) {
+        lastLang = current;
+        updateComparisonImages();
+      }
+    }, 500);
+  });
 </script>
+
 
 
 
